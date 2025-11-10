@@ -12,8 +12,8 @@ CHAT_ID = os.getenv("CHAT_ID", "1063182207")
 
 WALLETS = [
     {"address": "0x61032a6D4D8a18964F4D2885439437F260f58aD6", "name": "Wallet GIGGLE0"},
-    {"address": "0xaf25627aC5a3ac2EFC3B18bc4FC4E4E650F803Dc", "name": "GIGGLE Wallet"},
-    {"address": "0xb95aef34715696bfb80b8df98d3ad75742eb4947", "name": "Trading Bot"},
+    {"address": "0xaf25627aC5a3ac2EFC3B18bc4FC4E4E650F803Dc", "name": "GIGGLE wallet"},
+    {"address": "0xb95aef34715696bfb80b8df98d3ad75742eb4947", "name": "trading bot"},
     {"address": "0x11cc110124b2ff755272c1fb8e1dae255bd1626c", "name": "MIJ 26C"},
     {"address": "0x87652e51ef615572c9914cf38c49b7aaad8e61ce", "name": "MIJ 61CE"}
 ]
@@ -38,7 +38,7 @@ def get_txs(addr, action):
     except: return []
 
 def monitor():
-    send_telegram("GIGGLE SNIPER INICIADO\n24/7 EN NUBE")
+    send_telegram("GIGGLE SNIPER V9 INICIADO - 24/7 - SIMPLIFICADO")
     while True:
         try:
             for w in WALLETS:
@@ -49,11 +49,12 @@ def monitor():
                 for tx in new[:3]:
                     value = int(tx["value"]) / 1e18
                     usd = value * BNB_PRICE
+                    token = tx.get("tokenSymbol", "BNB")
                     if usd < 5: continue
-                    msg = f"*COMPRA*\nWallet: {name}\n{value:.6f} BNB (~${usd:.2f})\n[Ver TX](https://bscscan.com/tx/{tx['hash']})"
+                    msg = f"*TX NUEVA!*\nWallet: {name}\n{value:.6f} {token} (~${usd:.2f})\n[Ver TX](https://bscscan.com/tx/{tx['hash']})"
                     send_telegram(msg)
                     dashboard_data["transactions"].insert(0, {
-                        "wallet": name, "amount": f"{value:.6f} BNB", "usd": f"${usd:.2f}",
+                        "wallet": name, "amount": f"{value:.6f} {token}", "usd": f"${usd:.2f}",
                         "hash": tx["hash"], "time": datetime.fromtimestamp(int(tx["timeStamp"])).strftime("%H:%M")
                     })
                     if len(dashboard_data["transactions"]) > 50:
@@ -65,11 +66,11 @@ def monitor():
             time.sleep(5)
 
 HTML = '''<!DOCTYPE html><html><head><meta charset="UTF-8"><meta http-equiv="refresh" content="15">
-<title>GIGGLE SNIPER</title>
+<title>GIGGLE SNIPER v9</title>
 <style>body{background:#000;color:#0f0;font-family:Courier;padding:20px;text-align:center;}
 h1{color:#0f0;}table{margin:auto;border:2px solid #0f0;background:#111;}
 th,td{padding:10px;border-bottom:1px dashed #0f0;}a{color:#0ff;}</style></head><body>
-<h1>GIGGLE SNIPER 24/7</h1>
+<h1>GIGGLE SNIPER v9 - 24/7</h1>
 <p>BNB: ${{ bnb_price }} | {{ last_update }}</p>
 <table><tr><th>Wallet</th><th>Amount</th><th>USD</th><th>Time</th><th>TX</th></tr>
 {% for t in transactions %}
